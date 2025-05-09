@@ -38,7 +38,7 @@
 
         #game-title {
             font-size: clamp(2rem, 8vw, 3.5rem);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #ffcc00;
             text-shadow: 3px 3px 0 #ff3300, 5px 5px 0 #000;
             animation: pulse 1.5s infinite alternate;
@@ -47,6 +47,33 @@
         @keyframes pulse {
             from { transform: scale(1); }
             to { transform: scale(1.05); }
+        }
+
+        #game-instructions {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 90%;
+            margin: 10px 0;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        #game-instructions h3 {
+            color: #ffcc00;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        #game-instructions ul {
+            text-align: left;
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        #game-instructions li {
+            margin-bottom: 8px;
         }
 
         #play-btn {
@@ -61,8 +88,20 @@
             box-shadow: 0 5px 0 #cc2200;
             width: 80%;
             max-width: 300px;
+            margin-top: 10px;
         }
 
+        #play-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #cc2200;
+        }
+
+        #play-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #cc2200;
+        }
+
+        /* Restante do CSS permanece igual */
         #game-container {
             display: none;
             width: 100%;
@@ -114,6 +153,45 @@
             background-size: contain;
             background-repeat: no-repeat;
             z-index: 2;
+        }
+
+        .trap {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 2;
+            animation: shake 0.5s infinite alternate;
+        }
+
+        .problem {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 2;
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        .problem-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff3300;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 5px;
+            font-size: 10px;
+            white-space: nowrap;
+            z-index: 3;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(-2px); }
+            100% { transform: translateX(2px); }
         }
 
         #event-screen {
@@ -197,6 +275,39 @@
             max-width: 250px;
         }
 
+        #trap-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #trap-character {
+            width: 150px;
+            height: 200px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-bottom: 20px;
+        }
+
+        #trap-message {
+            font-size: clamp(1rem, 5vw, 1.5rem);
+            text-align: center;
+            max-width: 90%;
+            margin-bottom: 20px;
+            color: #ff3300;
+        }
+
         .explosion {
             position: absolute;
             width: 80px;
@@ -221,7 +332,6 @@
             100% { transform: translateY(-15px); }
         }
 
-        /* Removemos os controles para mobile pois não serão mais necessários */
         #controls {
             display: none;
         }
@@ -237,16 +347,55 @@
                 width: 40px;
                 height: 60px;
             }
+            
+            .trap {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .problem {
+                width: 60px;
+                height: 60px;
+            }
+            
+            #game-instructions {
+                font-size: 0.8rem;
+                padding: 10px;
+                max-height: 40vh;
+            }
         }
     </style>
 </head>
 <body>
     <div id="start-screen">
         <h1 id="game-title">SUPER-FÁBIO vs SECAJ</h1>
-        <p>Ajude o Super-Fábio a aniquilar os processos!</p>
+        
+        <div id="game-instructions">
+            <h3>COMO JOGAR</h3>
+            <p>Ajude o Super-Fábio a aniquilar os processos da SECAJ!</p>
+            
+            <ul>
+                <li><strong>Objetivo:</strong> Destrua o máximo de processos possível em 60 segundos</li>
+                <li><strong>Controles:</strong> Arraste o Super-Fábio com o mouse/toque para coletar os processos</li>
+                <li><strong>Cuidado:</strong> Evite as armadilhas que acabam com o jogo instantaneamente</li>
+                <li><strong>Problemas:</strong> Alguns processos são especiais - resolva-os para ganhar bônus</li>
+                <li><strong>Armadilhas mortais:</strong> Mulher com surpresinha, Sorriso do Borges e VitorBet</li>
+            </ul>
+            
+            <h3>REGRAS</h3>
+            <ul>
+                <li>+1 ponto para cada processo destruído</li>
+                <li>+5 pontos para cada problema resolvido</li>
+                <li>Tocar em uma armadilha termina o jogo</li>
+                <li>Complete todos os 4 eventos especiais para vencer</li>
+                <li>O jogo termina quando o tempo acabar ou você perder</li>
+            </ul>
+        </div>
+        
         <button id="play-btn">JOGAR</button>
     </div>
 
+    <!-- Restante do HTML permanece igual -->
     <div id="game-container">
         <div id="score">Processos: 0</div>
         <div id="time">Tempo: 60s</div>
@@ -260,6 +409,12 @@
         <button id="resolve-btn">RESOLVER</button>
     </div>
 
+    <div id="trap-screen">
+        <div id="trap-character"></div>
+        <div id="trap-message"></div>
+        <button id="restart-btn">TENTAR NOVAMENTE</button>
+    </div>
+
     <div id="game-over">
         <h2>MISSÃO CUMPRIDA!</h2>
         <p>Você aniquilou <span id="final-score">0</span> processos!</p>
@@ -267,6 +422,7 @@
     </div>
 
     <script>
+        // O script permanece exatamente o mesmo da versão anterior
         // Elementos do DOM
         const startScreen = document.getElementById('start-screen');
         const gameContainer = document.getElementById('game-container');
@@ -281,6 +437,9 @@
         const gameOverScreen = document.getElementById('game-over');
         const finalScoreElement = document.getElementById('final-score');
         const restartBtn = document.getElementById('restart-btn');
+        const trapScreen = document.getElementById('trap-screen');
+        const trapCharacter = document.getElementById('trap-character');
+        const trapMessage = document.getElementById('trap-message');
         
         // Variáveis do jogo
         let score = 0;
@@ -290,7 +449,10 @@
         let fabioLeft = 50;
         let fabioBottom = 50;
         let processes = [];
+        let traps = [];
+        let problems = [];
         let processInterval;
+        let trapInterval;
         let gameTimer;
         let eventTimer;
         let currentEvent = null;
@@ -301,31 +463,57 @@
         let isDragging = false;
         let offsetX, offsetY;
 
-        // Eventos do jogo
+        // Eventos do jogo (intercorrências)
         const events = [
             {
                 name: "Marcelinho do Tênis",
                 message: "Marcelinho chegou cuspindo fogo e chutando a própria sombra!",
                 action: "Acalme-o antes que ele queime todos os processos!",
-                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23ff9999"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 100 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%23ff6666"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><circle cx="100" cy="30" r="15" fill="%23ff3300"/><path d="M80 30 L120 30 M100 20 L100 40" stroke="%23fff" stroke-width="2"/></svg>'
+                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23ff9999"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 100 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%23ff6666"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><circle cx="100" cy="30" r="15" fill="%23ff3300"/><path d="M80 30 L120 30 M100 20 L100 40" stroke="%23fff" stroke-width="2"/></svg>',
+                image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23ff9999"/><circle cx="35" cy="40" r="5" fill="%23000"/><circle cx="65" cy="40" r="5" fill="%23000"/><path d="M40 60 Q50 70 60 60" stroke="%23000" stroke-width="2" fill="none"/><path d="M30 30 L40 20 M70 30 L60 20" stroke="%23ff3300" stroke-width="3"/></svg>'
             },
             {
                 name: "Borges",
                 message: "Borges chegou tomando açaí com dois canudos e rebolando o quadril!",
                 action: "Ofereça o kit-gay para reverter a situação enquanto há tempo!",
-                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23cc9966"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 110 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%23339966"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M30 100 L70 70 M170 100 L130 70" stroke="%23330066" stroke-width="6"/><path d="M70 180 Q100 200 130 180" stroke="%23ff00ff" stroke-width="5" fill="none"/></svg>'
+                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23cc9966"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 110 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%23339966"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M30 100 L70 70 M170 100 L130 70" stroke="%23330066" stroke-width="6"/><path d="M70 180 Q100 200 130 180" stroke="%23ff00ff" stroke-width="5" fill="none"/></svg>',
+                image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23cc9966"/><circle cx="35" cy="40" r="5" fill="%23000"/><circle cx="65" cy="40" r="5" fill="%23000"/><path d="M40 60 Q50 80 60 60" stroke="%23000" stroke-width="3" fill="none"/><path d="M30 30 L40 20 M70 30 L60 20" stroke="%23330066" stroke-width="4"/></svg>'
             },
             {
                 name: "Flávio",
                 message: "Flávio está preso no elevador chorando!",
                 action: "Resgate-o e pegue-o no colo antes que o prédio desabe!",
-                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%2399ccff"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 80 Q100 70 110 80" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%236699ff"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M100 50 L100 30 M80 40 L120 40" stroke="%23000" stroke-width="3"/><path d="M90 200 L90 240 M110 200 L110 240" stroke="%23000" stroke-width="3"/></svg>'
+                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%2399ccff"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 80 Q100 70 110 80" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%236699ff"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M100 50 L100 30 M80 40 L120 40" stroke="%23000" stroke-width="3"/><path d="M90 200 L90 240 M110 200 L110 240" stroke="%23000" stroke-width="3"/></svg>',
+                image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%2399ccff"/><circle cx="35" cy="40" r="5" fill="%23000"/><circle cx="65" cy="40" r="5" fill="%23000"/><path d="M40 50 Q50 40 60 50" stroke="%23000" stroke-width="3" fill="none"/><path d="M50 60 L50 70 M40 80 L60 80" stroke="%23000" stroke-width="2"/></svg>'
             },
             {
                 name: "Zap Zap",
                 message: "Zap Zap chegou injuriado perguntando 'QUEM DISSE OPA?'!",
                 action: "Jogue-o pela janela antes que ele exploda de raiva!",
-                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23ffcc00"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 110 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%2333cc33"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M40 50 L80 30 M160 50 L120 30" stroke="%23ff3300" stroke-width="6"/><path d="M70 180 L90 160 M130 180 L110 160" stroke="%23ff0000" stroke-width="4"/></svg>'
+                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23ffcc00"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 110 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%2333cc33"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M40 50 L80 30 M160 50 L120 30" stroke="%23ff3300" stroke-width="6"/><path d="M70 180 L90 160 M130 180 L110 160" stroke="%23ff0000" stroke-width="4"/></svg>',
+                image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23ffcc00"/><circle cx="35" cy="40" r="5" fill="%23000"/><circle cx="65" cy="40" r="5" fill="%23000"/><path d="M40 60 Q50 70 60 60" stroke="%23000" stroke-width="3" fill="none"/><path d="M30 30 L40 20 M70 30 L60 20" stroke="%23ff3300" stroke-width="4"/></svg>'
+            }
+        ];
+
+        // Armadilhas
+        const trapsData = [
+            {
+                name: "Mulher com surpresinha",
+                message: "Kriptonita de Fábio! Ele ficou paralizado e não conseguiu mais trabalhar!",
+                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23ff99cc"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 100 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%23ff66aa"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M40 40 L70 70 M160 40 L130 70" stroke="%23ff0000" stroke-width="4"/><circle cx="100" cy="30" r="10" fill="%23ff0000"/></svg>',
+                image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23ff99cc" stroke="%23ff0066" stroke-width="2"/><circle cx="35" cy="40" r="5" fill="%23000"/><circle cx="65" cy="40" r="5" fill="%23000"/><path d="M40 60 Q50 70 60 60" stroke="%23000" stroke-width="2" fill="none"/><circle cx="50" cy="30" r="5" fill="%23ff0000"/></svg>'
+            },
+            {
+                name: "Sorriso letal do Borges",
+                message: "Tirou a concentração e o fez esquecer todos os processos!",
+                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><circle cx="100" cy="70" r="50" fill="%23cc9966"/><circle cx="80" cy="60" r="8" fill="%23000"/><circle cx="120" cy="60" r="8" fill="%23000"/><path d="M90 90 Q100 110 110 90" stroke="%23000" stroke-width="3" fill="none"/><rect x="70" y="120" width="60" height="100" fill="%23339966"/><path d="M100 120 L100 220 M70 150 L130 150" stroke="%23000" stroke-width="3"/><path d="M30 100 L70 70 M170 100 L130 70" stroke="%23330066" stroke-width="6"/><path d="M70 180 Q100 200 130 180" stroke="%23ff00ff" stroke-width="5" fill="none"/></svg>',
+                image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23cc9966" stroke="%23330000" stroke-width="2"/><circle cx="35" cy="40" r="5" fill="%23000"/><circle cx="65" cy="40" r="5" fill="%23000"/><path d="M40 60 Q50 80 60 60" stroke="%23000" stroke-width="3" fill="none"/><path d="M30 30 L40 20 M70 30 L60 20" stroke="%23330066" stroke-width="4"/></svg>'
+            },
+            {
+                name: "VitorBet",
+                message: "Caiu na aposta esportiva e perdeu todas as suas economias dos últimos 20 anos! Não quis mais trabalhar...",
+                character: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250"><rect x="50" y="30" width="100" height="40" rx="5" fill="%23ffcc00"/><text x="100" y="60" font-family="Arial" font-size="20" text-anchor="middle" fill="%23000">VitorBet</text><rect x="70" y="80" width="60" height="120" fill="%23333333"/><rect x="80" y="90" width="40" height="100" fill="%23cc0000"/><path d="M90 100 L120 100 M90 120 L120 120 M90 140 L120 140 M90 160 L120 160" stroke="%23ffcc00" stroke-width="3"/></svg>',
+                image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="5" fill="%23cc0000"/><rect x="20" y="20" width="60" height="60" fill="%23ffcc00"/><text x="50" y="60" font-family="Arial" font-size="20" text-anchor="middle" fill="%23000">VB</text></svg>'
             }
         ];
 
@@ -346,6 +534,7 @@
             startScreen.style.display = 'none';
             gameOverScreen.style.display = 'none';
             eventScreen.style.display = 'none';
+            trapScreen.style.display = 'none';
             gameContainer.style.display = 'block';
             
             // Resetar valores
@@ -357,10 +546,12 @@
             gameActive = true;
             gamePaused = false;
             processes = [];
+            traps = [];
+            problems = [];
             eventsQueue = [...events];
             
-            // Remover todos os processos existentes
-            document.querySelectorAll('.process').forEach(p => p.remove());
+            // Remover todos os processos, armadilhas e problemas existentes
+            document.querySelectorAll('.process, .trap, .problem').forEach(el => el.remove());
             
             // Posicionar Fábio
             fabioLeft = 50;
@@ -369,8 +560,9 @@
             
             // Iniciar loops do jogo
             processInterval = setInterval(createProcess, 500);
+            trapInterval = setInterval(createTrapGroup, 3000); // Agora cria grupos de armadilhas
             gameTimer = setInterval(updateTimer, 1000);
-            eventTimer = setInterval(randomEvent, 10000);
+            eventTimer = setInterval(randomEvent, 15000); // Aumentei o tempo entre eventos
             
             // Iniciar loop de animação
             requestAnimationFrame(gameLoop);
@@ -394,6 +586,67 @@
             });
         }
 
+        function createTrapGroup() {
+            if (!gameActive || gamePaused || traps.length > 10) return;
+            
+            // Criar 3-5 armadilhas de uma vez
+            const trapCount = 3 + Math.floor(Math.random() * 3);
+            
+            for (let i = 0; i < trapCount; i++) {
+                setTimeout(() => {
+                    if (gameActive && !gamePaused) {
+                        createTrap();
+                    }
+                }, i * 300); // Espaça a criação das armadilhas
+            }
+        }
+
+        function createTrap() {
+            const trapData = trapsData[Math.floor(Math.random() * trapsData.length)];
+            const trap = document.createElement('div');
+            trap.className = 'trap';
+            trap.style.backgroundImage = `url('${trapData.image}')`;
+            const leftPos = Math.random() * (window.innerWidth - 60);
+            trap.style.left = `${leftPos}px`;
+            trap.style.bottom = `${window.innerHeight}px`;
+            gameContainer.appendChild(trap);
+            
+            traps.push({
+                element: trap,
+                bottom: window.innerHeight,
+                speed: 1.5 + Math.random() * 2,
+                left: leftPos,
+                data: trapData
+            });
+        }
+
+        function createProblem() {
+            if (!gameActive || gamePaused || problems.length > 0) return;
+            
+            const problemData = events[Math.floor(Math.random() * events.length)];
+            const problem = document.createElement('div');
+            problem.className = 'problem';
+            problem.style.backgroundImage = `url('${problemData.image}')`;
+            const leftPos = Math.random() * (window.innerWidth - 70);
+            problem.style.left = `${leftPos}px`;
+            problem.style.bottom = `${window.innerHeight}px`;
+            gameContainer.appendChild(problem);
+            
+            // Adicionar label "PROBLEMA"
+            const label = document.createElement('div');
+            label.className = 'problem-label';
+            label.textContent = 'PROBLEMA NA SECAJ';
+            problem.appendChild(label);
+            
+            problems.push({
+                element: problem,
+                bottom: window.innerHeight,
+                speed: 1 + Math.random() * 1.5,
+                left: leftPos,
+                data: problemData
+            });
+        }
+
         function updateProcesses() {
             if (gamePaused) return;
             
@@ -402,12 +655,7 @@
                 process.element.style.bottom = `${process.bottom}px`;
                 
                 // Verificar colisão com Fábio
-                if (
-                    fabioLeft < process.left + 50 &&
-                    fabioLeft + 80 > process.left &&
-                    fabioBottom < process.bottom + 70 &&
-                    fabioBottom + 120 > process.bottom)
-                {
+                if (checkCollision(fabioLeft, fabioBottom, 80, 120, process.left, process.bottom, 50, 70)) {
                     // Aniquilar processo
                     createExplosion(process.left + 25, process.bottom + 35);
                     process.element.remove();
@@ -428,8 +676,92 @@
             });
         }
 
+        function updateTraps() {
+            if (gamePaused) return;
+            
+            traps.forEach((trap, index) => {
+                trap.bottom -= trap.speed;
+                trap.element.style.bottom = `${trap.bottom}px`;
+                
+                // Verificar colisão com Fábio
+                if (checkCollision(fabioLeft, fabioBottom, 80, 120, trap.left, trap.bottom, 60, 60)) {
+                    // Armadilha pegou o Fábio
+                    trap.element.remove();
+                    traps.splice(index, 1);
+                    triggerTrap(trap.data);
+                }
+                
+                // Remover armadilhas que saíram da tela
+                if (trap.bottom < -60) {
+                    trap.element.remove();
+                    traps.splice(index, 1);
+                }
+            });
+        }
+
+        function updateProblems() {
+            if (gamePaused) return;
+            
+            problems.forEach((problem, index) => {
+                problem.bottom -= problem.speed;
+                problem.element.style.bottom = `${problem.bottom}px`;
+                
+                // Verificar colisão com Fábio
+                if (checkCollision(fabioLeft, fabioBottom, 80, 120, problem.left, problem.bottom, 70, 70)) {
+                    // Problema pegou o Fábio - transforma em evento
+                    problem.element.remove();
+                    problems.splice(index, 1);
+                    triggerProblem(problem.data);
+                }
+                
+                // Remover problemas que saíram da tela
+                if (problem.bottom < -70) {
+                    problem.element.remove();
+                    problems.splice(index, 1);
+                }
+            });
+        }
+
+        function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2) {
+            return x1 < x2 + w2 &&
+                   x1 + w1 > x2 &&
+                   y1 < y2 + h2 &&
+                   y1 + h1 > y2;
+        }
+
+        function triggerTrap(trapData) {
+            gameActive = false;
+            gamePaused = true;
+            clearInterval(processInterval);
+            clearInterval(trapInterval);
+            clearInterval(gameTimer);
+            clearInterval(eventTimer);
+            
+            // Configurar tela de armadilha
+            trapCharacter.style.backgroundImage = `url('${trapData.character}')`;
+            trapMessage.textContent = `${trapData.name}!\n\n${trapData.message}`;
+            trapScreen.style.display = 'flex';
+        }
+
+        function triggerProblem(problemData) {
+            gamePaused = true;
+            clearInterval(processInterval);
+            clearInterval(trapInterval);
+            
+            // Configurar tela de problema
+            eventCharacter.style.backgroundImage = `url('${problemData.character}')`;
+            eventMessage.textContent = `Apareceu um problema na SECAJ!\n\n${problemData.message}\n\n${problemData.action}`;
+            eventScreen.style.display = 'flex';
+        }
+
         function randomEvent() {
             if (!gameActive || gamePaused || currentEvent || eventsQueue.length === 0) return;
+            
+            // 50% de chance de criar um problema em vez de um evento de tela cheia
+            if (Math.random() < 0.5) {
+                createProblem();
+                return;
+            }
             
             // Selecionar evento aleatório da fila
             const randomIndex = Math.floor(Math.random() * eventsQueue.length);
@@ -439,6 +771,7 @@
             // Pausar o jogo
             gamePaused = true;
             clearInterval(processInterval);
+            clearInterval(trapInterval);
             
             // Configurar tela de evento
             eventCharacter.style.backgroundImage = `url('${currentEvent.character}')`;
@@ -463,8 +796,9 @@
             fabio.classList.add('jumping');
             setTimeout(() => fabio.classList.remove('jumping'), 500);
             
-            // Reiniciar criação de processos
+            // Reiniciar criação de processos e armadilhas
             processInterval = setInterval(createProcess, 500);
+            trapInterval = setInterval(createTrapGroup, 3000);
             
             // Verificar se todos os eventos foram completados
             if (eventsCompleted >= totalEvents) {
@@ -498,15 +832,20 @@
         function endGame() {
             gameActive = false;
             clearInterval(processInterval);
+            clearInterval(trapInterval);
             clearInterval(gameTimer);
             clearInterval(eventTimer);
             
             finalScoreElement.textContent = score;
             gameOverScreen.style.display = 'flex';
             
-            // Remover todos os processos
+            // Remover todos os processos, armadilhas e problemas
             processes.forEach(p => p.element.remove());
+            traps.forEach(t => t.element.remove());
+            problems.forEach(p => p.element.remove());
             processes = [];
+            traps = [];
+            problems = [];
         }
 
         // Funções para arrastar o Fábio
@@ -572,6 +911,8 @@
         function gameLoop() {
             if (gameActive) {
                 updateProcesses();
+                updateTraps();
+                updateProblems();
                 requestAnimationFrame(gameLoop);
             }
         }
