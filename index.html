@@ -102,6 +102,8 @@
             left: 50px;
             z-index: 3;
             transition: transform 0.2s;
+            cursor: pointer;
+            touch-action: none;
         }
 
         .process {
@@ -219,30 +221,9 @@
             100% { transform: translateY(-15px); }
         }
 
-        /* Controles para mobile */
+        /* Removemos os controles para mobile pois não serão mais necessários */
         #controls {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
             display: none;
-            justify-content: center;
-            gap: 20px;
-            z-index: 5;
-        }
-
-        .control-btn {
-            width: 60px;
-            height: 60px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: white;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         @media (max-width: 768px) {
@@ -255,10 +236,6 @@
             .process {
                 width: 40px;
                 height: 60px;
-            }
-            
-            #controls {
-                display: flex;
             }
         }
     </style>
@@ -274,12 +251,7 @@
         <div id="score">Processos: 0</div>
         <div id="time">Tempo: 60s</div>
         <div id="fabio"></div>
-        <div id="controls">
-            <div class="control-btn" id="left-btn">←</div>
-            <div class="control-btn" id="up-btn">↑</div>
-            <div class="control-btn" id="down-btn">↓</div>
-            <div class="control-btn" id="right-btn">→</div>
-        </div>
+        <div id="controls"></div>
     </div>
 
     <div id="event-screen">
@@ -310,12 +282,6 @@
         const finalScoreElement = document.getElementById('final-score');
         const restartBtn = document.getElementById('restart-btn');
         
-        // Controles mobile
-        const leftBtn = document.getElementById('left-btn');
-        const rightBtn = document.getElementById('right-btn');
-        const upBtn = document.getElementById('up-btn');
-        const downBtn = document.getElementById('down-btn');
-
         // Variáveis do jogo
         let score = 0;
         let timeLeft = 60;
@@ -332,6 +298,8 @@
         let eventsCompleted = 0;
         const totalEvents = 4;
         let isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        let isDragging = false;
+        let offsetX, offsetY;
 
         // Eventos do jogo
         const events = [
@@ -366,14 +334,13 @@
         restartBtn.addEventListener('click', startGame);
         resolveBtn.addEventListener('click', resolveEvent);
 
-        // Controles mobile
-        leftBtn.addEventListener('touchstart', () => moveFabio('left'));
-        rightBtn.addEventListener('touchstart', () => moveFabio('right'));
-        upBtn.addEventListener('touchstart', () => moveFabio('up'));
-        downBtn.addEventListener('touchstart', () => moveFabio('down'));
-
-        // Evitar comportamento padrão do touch
-        document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+        // Configurar eventos de arrastar para o Fábio
+        fabio.addEventListener('mousedown', startDrag);
+        fabio.addEventListener('touchstart', startDrag, { passive: false });
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
 
         function startGame() {
             startScreen.style.display = 'none';
@@ -404,11 +371,6 @@
             processInterval = setInterval(createProcess, 500);
             gameTimer = setInterval(updateTimer, 1000);
             eventTimer = setInterval(randomEvent, 10000);
-            
-            // Ativar controles
-            if (!isMobile) {
-                document.addEventListener('keydown', handleKeyDown);
-            }
             
             // Iniciar loop de animação
             requestAnimationFrame(gameLoop);
@@ -545,53 +507,60 @@
             // Remover todos os processos
             processes.forEach(p => p.element.remove());
             processes = [];
-            
-            // Remover listener de teclado
-            if (!isMobile) {
-                document.removeEventListener('keydown', handleKeyDown);
-            }
         }
 
-        function handleKeyDown(e) {
+        // Funções para arrastar o Fábio
+        function startDrag(e) {
             if (!gameActive || gamePaused) return;
             
-            switch(e.key) {
-                case 'ArrowLeft':
-                    moveFabio('left');
-                    break;
-                case 'ArrowRight':
-                    moveFabio('right');
-                    break;
-                case 'ArrowUp':
-                    moveFabio('up');
-                    break;
-                case 'ArrowDown':
-                    moveFabio('down');
-                    break;
+            isDragging = true;
+            
+            // Calcular a posição do mouse/toque relativa ao Fábio
+            const rect = fabio.getBoundingClientRect();
+            
+            if (e.type === 'mousedown') {
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+            } else if (e.type === 'touchstart') {
+                e.preventDefault();
+                const touch = e.touches[0];
+                offsetX = touch.clientX - rect.left;
+                offsetY = touch.clientY - rect.top;
             }
+            
+            // Adicionar classe para feedback visual
+            fabio.style.transform = 'scale(1.1)';
         }
 
-        function moveFabio(direction) {
-            if (!gameActive || gamePaused) return;
+        function drag(e) {
+            if (!isDragging || !gameActive || gamePaused) return;
             
-            const moveAmount = isMobile ? 15 : 20;
+            let clientX, clientY;
             
-            switch(direction) {
-                case 'left':
-                    fabioLeft = Math.max(0, fabioLeft - moveAmount);
-                    break;
-                case 'right':
-                    fabioLeft = Math.min(window.innerWidth - 80, fabioLeft + moveAmount);
-                    break;
-                case 'up':
-                    fabioBottom = Math.min(window.innerHeight - 120, fabioBottom + moveAmount);
-                    break;
-                case 'down':
-                    fabioBottom = Math.max(0, fabioBottom - moveAmount);
-                    break;
+            if (e.type === 'mousemove') {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            } else if (e.type === 'touchmove') {
+                e.preventDefault();
+                const touch = e.touches[0];
+                clientX = touch.clientX;
+                clientY = touch.clientY;
             }
+            
+            // Calcular nova posição
+            fabioLeft = clientX - offsetX;
+            fabioBottom = window.innerHeight - (clientY + fabio.offsetHeight - offsetY);
+            
+            // Limitar aos limites da tela
+            fabioLeft = Math.max(0, Math.min(window.innerWidth - fabio.offsetWidth, fabioLeft));
+            fabioBottom = Math.max(0, Math.min(window.innerHeight - fabio.offsetHeight, fabioBottom));
             
             updateFabioPosition();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            fabio.style.transform = '';
         }
 
         function updateFabioPosition() {
